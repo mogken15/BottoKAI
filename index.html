@@ -11,20 +11,22 @@
     2. 下記のスタイル内の .hero-bg セクションで background-image のコメントを外す
     3. 画像パスを設定（例: background-image: url('images/hero-bg.jpg');）
     
-    【人物とテキストの重なりを避ける調整方法】
+    【2人の人物を右側にしっかり表示する設定】
     
     現在の設定：
-    - テキストエリアを左側に制限（max-width: 600px）
-    - グラデーションで左側70%を暗くして、テキストの可読性を確保
-    - 画像は右寄せで配置（background-position: right center）
+    - 画像を右端から-50px外側に配置（2人が完全に見える）
+    - 左側45%は完全に不透明な背景色（画像がないことを意識させない）
+    - 45%〜90%にかけて滑らかなグラデーション
+    - 背景に微妙なグラデーションを追加して左側の単調さを回避
     
-    さらに調整したい場合：
-    1. .hero-text の max-width を 500px に減らす → テキストエリアをより狭く
-    2. .hero-bg::after の width を 60% に変更 → 画像がより見えるように
-    3. background-position を '90% center' に変更 → 画像をさらに右に移動
+    微調整オプション：
+    1. background-position: right -30px center → 人物をもう少し内側に
+    2. background-position: right -70px center → 人物をさらに外側に
+    3. #134F5C 45% を 50% に変更 → 不透明部分をさらに広げる
     
-    モバイル表示：
-    - 自動的に画像が背景全体に表示され、上からのグラデーションでテキストを読みやすく
+    別の配置オプション：
+    - background-size: auto 100% → 高さ100%で幅は自動（人物が切れない）
+    - background-size: 120% auto → 画像を120%に拡大
     -->
     <style>
         * {
@@ -41,7 +43,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -49,11 +51,13 @@
         /* ヒーローセクション */
         .hero {
             position: relative;
-            padding: 80px 0;
+            padding: 100px 0;
             overflow: hidden;
-            min-height: 600px;
+            min-height: 650px;
             display: flex;
             align-items: center;
+            /* 左側の背景に微妙なグラデーションを追加 */
+            background: linear-gradient(135deg, #134F5C 0%, #1D6B7C 100%);
         }
         
         .hero-bg {
@@ -64,9 +68,9 @@
             height: 100%;
             /* 実装時は以下のコメントを外して、画像URLを設定してください */
             background-image: url('hero-bg.png');
-            background-color: #134F5C; /* 画像がない場合の背景色 */
+            background-color: transparent; /* 親要素の背景を活かす */
             background-size: cover;
-            background-position: right center; /* 画像を右寄せに配置 */
+            background-position: right -50px center; /* 画像を右端からさらに外側に配置 */
             background-repeat: no-repeat;
             z-index: 1;
         }
@@ -76,14 +80,31 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 70%; /* 左側70%をカバー */
+            width: 100%;
             height: 100%;
+            /* 左側を完全に不透明にして、右に向かって徐々に透明に */
             background: linear-gradient(to right, 
-                rgba(19, 79, 92, 0.95) 0%, 
-                rgba(19, 79, 92, 0.95) 70%, 
-                rgba(19, 79, 92, 0.7) 85%,
-                rgba(19, 79, 92, 0) 100%);
+                #134F5C 0%,           /* 左端は完全に不透明 */
+                #134F5C 45%,          /* 45%まで完全に不透明を維持 */
+                rgba(19, 79, 92, 0.95) 55%,
+                rgba(19, 79, 92, 0.7) 65%,
+                rgba(19, 79, 92, 0.3) 75%,
+                rgba(19, 79, 92, 0.05) 85%,
+                rgba(19, 79, 92, 0) 90%);
             z-index: 2;
+        }
+        
+        /* 左側に装飾的な要素を追加（オプション） */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
         }
         
         .hero .container {
@@ -93,14 +114,14 @@
         
         .hero-content {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 50px;
+            grid-template-columns: 1fr 1.2fr; /* 右側により多くのスペースを確保 */
+            gap: 60px;
             align-items: center;
         }
         
         .hero-text {
             color: #FFFFFF;
-            max-width: 600px; /* テキストエリアの最大幅を制限 */
+            max-width: 500px; /* テキストエリアをコンパクトに */
         }
         
         .hero-visual {
@@ -137,7 +158,7 @@
             margin-bottom: 30px;
             animation: fadeInUp 1s ease-out 0.4s;
             animation-fill-mode: both;
-            max-width: 500px; /* 字幕の幅も制限 */
+            max-width: 450px; /* 字幕の幅も制限 */
         }
         
         .hero-points {
