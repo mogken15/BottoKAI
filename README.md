@@ -1,0 +1,2 @@
+# BottoKAI
+for bottok AI
