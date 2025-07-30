@@ -7,11 +7,24 @@
     <!-- 
     【メインビジュアル画像の実装方法】
     添付いただいた建設現場の画像を使用する場合：
-    1. 画像を 'hero-background.jpg' などの名前でサーバーにアップロード
+    1. 画像を 'hero-bg.jpg' などの名前で images フォルダに保存
     2. 下記のスタイル内の .hero-bg セクションで background-image のコメントを外す
-    3. 画像パスを設定（例: background-image: url('images/hero-background.jpg');）
+    3. 画像パスを設定（例: background-image: url('images/hero-bg.jpg');）
     
-    これにより、建設・製造業の経営者により親近感を持っていただけるビジュアルになります。
+    【人物とテキストの重なりを避ける調整方法】
+    
+    現在の設定：
+    - テキストエリアを左側に制限（max-width: 600px）
+    - グラデーションで左側70%を暗くして、テキストの可読性を確保
+    - 画像は右寄せで配置（background-position: right center）
+    
+    さらに調整したい場合：
+    1. .hero-text の max-width を 500px に減らす → テキストエリアをより狭く
+    2. .hero-bg::after の width を 60% に変更 → 画像がより見えるように
+    3. background-position を '90% center' に変更 → 画像をさらに右に移動
+    
+    モバイル表示：
+    - 自動的に画像が背景全体に表示され、上からのグラデーションでテキストを読みやすく
     -->
     <style>
         * {
@@ -49,11 +62,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-
-            background-image: url('hero-bg.png'); 
+            /* 実装時は以下のコメントを外して、画像URLを設定してください */
+            background-image: url('hero-bg.png');
             background-color: #134F5C; /* 画像がない場合の背景色 */
             background-size: cover;
-            background-position: center right;
+            background-position: right center; /* 画像を右寄せに配置 */
             background-repeat: no-repeat;
             z-index: 1;
         }
@@ -63,9 +76,13 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 70%; /* 左側70%をカバー */
             height: 100%;
-            background: linear-gradient(to right, rgba(19, 79, 92, 0.9) 0%, rgba(19, 79, 92, 0.7) 60%, rgba(19, 79, 92, 0.2) 100%);
+            background: linear-gradient(to right, 
+                rgba(19, 79, 92, 0.95) 0%, 
+                rgba(19, 79, 92, 0.95) 70%, 
+                rgba(19, 79, 92, 0.7) 85%,
+                rgba(19, 79, 92, 0) 100%);
             z-index: 2;
         }
         
@@ -76,17 +93,18 @@
         
         .hero-content {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1.5fr 1fr;
             gap: 50px;
             align-items: center;
         }
         
         .hero-text {
             color: #FFFFFF;
+            max-width: 600px; /* テキストエリアの最大幅を制限 */
         }
         
         .hero-visual {
-            /* 画像が背景にあるため、右側は空にしておく */
+            /* 右側のスペースを確保 */
         }
         
         .hero-badge {
@@ -119,6 +137,7 @@
             margin-bottom: 30px;
             animation: fadeInUp 1s ease-out 0.4s;
             animation-fill-mode: both;
+            max-width: 500px; /* 字幕の幅も制限 */
         }
         
         .hero-points {
@@ -578,7 +597,36 @@
             }
         }
         
-        /* レスポンシブ */
+        /* 別案：画像を右側に配置する場合のスタイル */
+        /*
+        .hero {
+            background: linear-gradient(135deg, #134F5C 0%, #1D6B7C 100%);
+            padding: 80px 0;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        */
         @media (max-width: 768px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -642,6 +690,9 @@
                 </div>
                 <div class="hero-visual">
                     <!-- 画像がメインビジュアルとして背景に表示されます -->
+                    <!-- 別案：画像を右側に配置したい場合は以下のコメントを外してください
+                    <img src="images/hero-bg.jpg" alt="建設現場の経営者とスタッフ">
+                    -->
                 </div>
             </div>
         </div>
